@@ -1,15 +1,23 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace UdemyGrabberWPF.Controllers
 {
     public class YoFreeSample
     {
-        public List<string> CreateUdemyLinkList()
+        private readonly MainWindow mainWindow;
+        public YoFreeSample(MainWindow mainWindow)
         {
+            this.mainWindow = mainWindow;
+        }
+        public async Task<List<string>> CreateUdemyLinkList()
+        {
+            const string url = "https://yofreesamples.com/courses/free-discounted-udemy-courses-list/";
+            await mainWindow.WriteInfo($"Getting coupon from {url}");
             List<string> udemyLinkList = new List<string>();
             HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load("https://yofreesamples.com/courses/free-discounted-udemy-courses-list/");
+            HtmlDocument doc = web.Load(url);
             HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//a[@class='btn btn-md btn-success']");
             if (linkList != null)
             {

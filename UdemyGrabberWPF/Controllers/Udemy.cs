@@ -24,11 +24,11 @@ namespace UdemyGrabberWPF.Controllers
             {
                 foreach (string udemyLink in udemyLinkList)
                 {
-                    await WriteInfo(udemyLink);
+                    await mainWindow.WriteInfo(udemyLink);
                     string courseId = GetCourseId(udemyLink);
                     if (string.IsNullOrEmpty(courseId))
                     {
-                        await WriteInfo("Can not get course id");
+                        await mainWindow.WriteInfo("Can not get course id");
                         continue;
                     }
                     bool purchased = await CheckPurchasedAsync(courseId);
@@ -64,13 +64,13 @@ namespace UdemyGrabberWPF.Controllers
                 }
                 else
                 {
-                    await WriteInfo(purchasedDate);
+                    await mainWindow.WriteInfo(purchasedDate);
                     return true;
                 }
             }
             else
             {
-                await WriteInfo(response.ReasonPhrase);
+                await mainWindow.WriteInfo(response.ReasonPhrase);
                 return true;
             }
         }
@@ -104,7 +104,7 @@ namespace UdemyGrabberWPF.Controllers
             string couponCode = HttpUtility.ParseQueryString(myUri.Query).Get("couponCode");
             if (string.IsNullOrEmpty(couponCode))
             {
-                await WriteInfo("Can not find coupon");
+                await mainWindow.WriteInfo("Can not find coupon");
                 return;
             }
 
@@ -134,22 +134,17 @@ namespace UdemyGrabberWPF.Controllers
                 dynamic purchasedInfo = JsonConvert.DeserializeObject(jsonResponse);
                 if (purchasedInfo.message == null)
                 {
-                    await WriteInfo($"Purchase success {purchasedInfo}");
+                    await mainWindow.WriteInfo($"Purchase success {purchasedInfo}");
                 }
                 else
                 {
-                    await WriteInfo("Coupon expired");
+                    await mainWindow.WriteInfo("Coupon expired");
                 }
             }
             else
             {
                 Console.WriteLine(response.ReasonPhrase);
             }
-        }
-        public async Task WriteInfo(string content)
-        {
-            mainWindow.Info.Text += content + "\n";
-            await Task.Delay(3);
         }
     }
 }

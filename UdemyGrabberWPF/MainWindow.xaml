@@ -19,6 +19,7 @@
                     <Grid>
                         <CheckBox Name="YoFreeSampleChk" Content="YoFreeSample" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
                         <CheckBox Name="TutorialBarChk" Content="TutorialBar" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                        <!--<CheckBox Name="LearnViral" Content="LearnViral" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="True"/>-->
                     </Grid>
                 </GroupBox>
                 <Button Name="Start" Content="Start" HorizontalAlignment="Left" Margin="249,134,0,0" VerticalAlignment="Top" Width="108" Click="Start_Click" Height="53" RenderTransformOrigin="0.528,1.34"/>

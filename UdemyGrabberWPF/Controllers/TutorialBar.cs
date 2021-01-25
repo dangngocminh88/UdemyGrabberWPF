@@ -1,13 +1,17 @@
 ﻿using HtmlAgilityPack;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace UdemyGrabberWPF.Controllers
 {
     public class TutorialBar
     {
-        public List<string> Run(int maxPage)
+        private readonly MainWindow mainWindow;
+        public TutorialBar(MainWindow mainWindow)
+        {
+            this.mainWindow = mainWindow;
+        }
+        public async Task<List<string>> CreateUdemyLinkList(int maxPage)
         {
             if (maxPage == 0)
             {
@@ -17,18 +21,20 @@ namespace UdemyGrabberWPF.Controllers
             List<string> udemyLinkList = new List<string>();
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc;
+            string url;
 
             for (int page = 1; page < maxPage; page++)
             {
                 if (page == 1)
                 {
-                    doc = web.Load("https://www.tutorialbar.com/all-courses/");
+                    url = "https://www.tutorialbar.com/all-courses/";
                 }
                 else
                 {
-                    doc = web.Load("https://www.tutorialbar.com/all-courses/");
+                    url = $"https://www.tutorialbar.com/all-courses/page/{page}/";
                 }
-
+                await mainWindow.WriteInfo($"Getting coupon from {url}");
+                doc = web.Load(url);
                 HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//h3[@class='mb15 mt0 font110 mobfont100 fontnormal lineheight20']");
                 if (linkList != null)
                 {
@@ -38,14 +44,14 @@ namespace UdemyGrabberWPF.Controllers
                         if (!string.IsNullOrEmpty(linkPage))
                         {
 
-                            udemyLinkList.Add(getUdemyLink(linkPage));
+                            udemyLinkList.Add(GetUdemyLink(linkPage));
                         }
                     }
                 }
             }
             return udemyLinkList;
         }
-        private string getUdemyLink(string linkPage)
+        private string GetUdemyLink(string linkPage)
         {
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(linkPage);

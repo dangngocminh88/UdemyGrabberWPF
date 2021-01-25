@@ -55,21 +55,32 @@ namespace UdemyGrabberWPF
 
             if (YoFreeSampleChk.IsChecked ?? false)
             {
-                await udemy.WriteInfo("Getting coupon from https://yofreesamples.com/");
-                YoFreeSample yoFreeSample = new YoFreeSample();
-                List<string> udemyLinkList = yoFreeSample.CreateUdemyLinkList();
+                YoFreeSample yoFreeSample = new YoFreeSample(Main);
+                List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList();
                 await udemy.RunAsync(udemyLinkList);
             }
 
             if (TutorialBarChk.IsChecked ?? false)
             {
-                await udemy.WriteInfo("Getting coupon from https://www.tutorialbar.com/");
-                TutorialBar tutorialBar = new TutorialBar();
-                List<string> udemyLinkList = tutorialBar.Run(10);
+                TutorialBar tutorialBar = new TutorialBar(Main);
+                List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10);
                 await udemy.RunAsync(udemyLinkList);
             }
 
+            /*if (LearnViral.IsChecked ?? false)
+            {
+                await udemy.WriteInfo("Getting coupon from https://udemycoupon.learnviral.com/");
+                TutorialBar tutorialBar = new TutorialBar();
+                List<string> udemyLinkList = tutorialBar.Run(10);
+                await udemy.RunAsync(udemyLinkList);
+            }*/
+
             MessageBox.Show("Complete");
+        }
+        public async Task WriteInfo(string content)
+        {
+            Info.Text += content + "\n";
+            await Task.Delay(3);
         }
     }
 }
