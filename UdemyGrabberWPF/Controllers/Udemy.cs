@@ -134,7 +134,7 @@ namespace UdemyGrabberWPF.Controllers
                 dynamic purchasedInfo = JsonConvert.DeserializeObject(jsonResponse);
                 if (purchasedInfo.message == null)
                 {
-                    await mainWindow.WriteInfo($"Purchase success {purchasedInfo}");
+                    await mainWindow.WriteInfo($"Enroll successfully {purchasedInfo}");
                 }
                 else
                 {
@@ -143,7 +143,7 @@ namespace UdemyGrabberWPF.Controllers
             }
             else
             {
-                Console.WriteLine(response.ReasonPhrase);
+                await mainWindow.WriteInfo(response.ReasonPhrase);
             }
         }
     }

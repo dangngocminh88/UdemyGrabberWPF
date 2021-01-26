@@ -67,13 +67,12 @@ namespace UdemyGrabberWPF
                 await udemy.RunAsync(udemyLinkList);
             }
 
-            /*if (LearnViral.IsChecked ?? false)
+            if (LearnViral.IsChecked ?? false)
             {
-                await udemy.WriteInfo("Getting coupon from https://udemycoupon.learnviral.com/");
-                TutorialBar tutorialBar = new TutorialBar();
-                List<string> udemyLinkList = tutorialBar.Run(10);
+                LearnViral learnViral = new LearnViral(Main);
+                List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10);
                 await udemy.RunAsync(udemyLinkList);
-            }*/
+            }
 
             MessageBox.Show("Complete");
         }
