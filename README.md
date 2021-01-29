@@ -2,7 +2,7 @@
 get Udemy coupon and auto enroll for your account
 
 Usage<p>
-Step 1: Download zip if youdon't have visual tudio to compile<p>
+Step 1: Download zip if you don't have visual tudio to compile<p>
 Step 2: login to udemy<p>
 Step 3: On your web brower, press F12, switch to Application Tab<p>
 Step 4: Choose Udemy under Storage / Cookies<p>
