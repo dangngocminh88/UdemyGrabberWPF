@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
 using UdemyGrabberWPF.Controllers;
+using UdemyGrabberWPF.Models;
 
 namespace UdemyGrabberWPF
 {
@@ -77,9 +79,17 @@ namespace UdemyGrabberWPF
 
             MessageBox.Show($"{numberEnrolled} course enrolled");
         }
-        public async Task WriteInfo(string content)
+        public async Task WriteInfo(string content, InfoType infoType)
         {
-            Info.Text += content + "\n";
+            Paragraph para = new Paragraph();
+            para.Inlines.Add(new Run(content));
+            para.Foreground = infoType switch
+            {
+                InfoType.Error => Brushes.Red,
+                InfoType.Sucess => Brushes.Blue,
+                _ => Brushes.Black,
+            };
+            Info.Document.Blocks.Add(para);
             await Task.Delay(3);
         }
     }

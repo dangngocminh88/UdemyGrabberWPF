@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UdemyGrabberWPF.Models;
 
 namespace UdemyGrabberWPF.Controllers
 {
@@ -31,7 +32,7 @@ namespace UdemyGrabberWPF.Controllers
                 {
                     url = $"https://udemycoupon.learnviral.com/coupon-category/free100-discount/page/{page}/";
                 }
-                await mainWindow.WriteInfo($"Getting coupon from {url}");
+                await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
                 doc = web.Load(url);
                 HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//a[@data-clipboard-text='Redeem Offer']");
                 if (linkList != null)

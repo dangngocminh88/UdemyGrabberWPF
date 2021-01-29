@@ -27,7 +27,15 @@
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="right">
             <ScrollViewer>
-                <TextBlock Name="Info" Background="Azure" TextWrapping="Wrap"/>
+                <RichTextBox Name="Info" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="0">
+                    <RichTextBox.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </RichTextBox.Resources>
+                    <FlowDocument>
+                    </FlowDocument>
+                </RichTextBox>
             </ScrollViewer>
         </Border>
     </DockPanel>

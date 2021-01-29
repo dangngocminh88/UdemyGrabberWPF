@@ -26,11 +26,11 @@ namespace UdemyGrabberWPF.Controllers
             {
                 foreach (string udemyLink in udemyLinkList)
                 {
-                    await mainWindow.WriteInfo(udemyLink);
+                    await mainWindow.WriteInfo(udemyLink, InfoType.Info);
                     string courseId = GetCourseId(udemyLink);
                     if (string.IsNullOrEmpty(courseId))
                     {
-                        await mainWindow.WriteInfo("Can not get course id");
+                        await mainWindow.WriteInfo("Can not get course id", InfoType.Error);
                         continue;
                     }
                     bool purchased = await CheckPurchasedAsync(courseId);
@@ -71,13 +71,13 @@ namespace UdemyGrabberWPF.Controllers
                 }
                 else
                 {
-                    await mainWindow.WriteInfo(purchasedDate);
+                    await mainWindow.WriteInfo(purchasedDate, InfoType.Info);
                     return true;
                 }
             }
             else
             {
-                await mainWindow.WriteInfo(response.ReasonPhrase);
+                await mainWindow.WriteInfo(response.ReasonPhrase, InfoType.Error);
                 return true;
             }
         }
@@ -106,12 +106,12 @@ namespace UdemyGrabberWPF.Controllers
         }
         private async Task<bool> EnrollAsync(string courseId, string udemyLink)
         {
-            string url = "https://www.udemy.com/payment/checkout-submit/";
+            const string url = "https://www.udemy.com/payment/checkout-submit/";
             Uri myUri = new Uri(udemyLink);
             string couponCode = HttpUtility.ParseQueryString(myUri.Query).Get("couponCode");
             if (string.IsNullOrEmpty(couponCode))
             {
-                await mainWindow.WriteInfo("Can not find coupon");
+                await mainWindow.WriteInfo("Can not find coupon", InfoType.Error);
                 return false;
             }
 
@@ -141,18 +141,18 @@ namespace UdemyGrabberWPF.Controllers
                 dynamic purchasedInfo = JsonConvert.DeserializeObject(jsonResponse);
                 if (purchasedInfo.message == null)
                 {
-                    await mainWindow.WriteInfo($"Enroll successfully {purchasedInfo}");
+                    await mainWindow.WriteInfo($"Enroll successfully {purchasedInfo}", InfoType.Sucess);
                     return true;
                 }
                 else
                 {
-                    await mainWindow.WriteInfo("Coupon expired");
+                    await mainWindow.WriteInfo("Coupon expired", InfoType.Error);
                     return false;
                 }
             }
             else
             {
-                await mainWindow.WriteInfo(response.ReasonPhrase);
+                await mainWindow.WriteInfo(response.ReasonPhrase, InfoType.Error);
                 return false;
             }
         }

@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UdemyGrabberWPF.Models;
 
 namespace UdemyGrabberWPF.Controllers
 {
@@ -31,7 +32,7 @@ namespace UdemyGrabberWPF.Controllers
                 {
                     url = $"https://www.tutorialbar.com/all-courses/page/{page}/";
                 }
-                await mainWindow.WriteInfo($"Getting coupon from {url}");
+                await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
                 doc = web.Load(url);
                 HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//h3[@class='mb15 mt0 font110 mobfont100 fontnormal lineheight20']");
                 if (linkList != null)
