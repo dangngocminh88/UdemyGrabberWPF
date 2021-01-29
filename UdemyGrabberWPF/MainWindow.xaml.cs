@@ -52,29 +52,30 @@ namespace UdemyGrabberWPF
             }
 
             Udemy udemy = new Udemy(Main);
+            int numberEnrolled = 0;
 
             if (YoFreeSampleChk.IsChecked ?? false)
             {
                 YoFreeSample yoFreeSample = new YoFreeSample(Main);
                 List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList();
-                await udemy.RunAsync(udemyLinkList);
+                numberEnrolled += await udemy.RunAsync(udemyLinkList);
             }
 
             if (TutorialBarChk.IsChecked ?? false)
             {
                 TutorialBar tutorialBar = new TutorialBar(Main);
                 List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10);
-                await udemy.RunAsync(udemyLinkList);
+                numberEnrolled += await udemy.RunAsync(udemyLinkList);
             }
 
             if (LearnViral.IsChecked ?? false)
             {
                 LearnViral learnViral = new LearnViral(Main);
                 List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10);
-                await udemy.RunAsync(udemyLinkList);
+                numberEnrolled += await udemy.RunAsync(udemyLinkList);
             }
 
-            MessageBox.Show("Complete");
+            MessageBox.Show($"{numberEnrolled} course enrolled");
         }
         public async Task WriteInfo(string content)
         {

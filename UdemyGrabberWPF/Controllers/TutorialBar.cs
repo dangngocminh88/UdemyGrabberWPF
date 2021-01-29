@@ -17,12 +17,10 @@ namespace UdemyGrabberWPF.Controllers
             {
                 return null;
             }
-
             List<string> udemyLinkList = new List<string>();
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc;
             string url;
-
             for (int page = 1; page < maxPage; page++)
             {
                 if (page == 1)
@@ -43,7 +41,6 @@ namespace UdemyGrabberWPF.Controllers
                         string linkPage = link?.ChildNodes["a"]?.Attributes["href"]?.Value;
                         if (!string.IsNullOrEmpty(linkPage))
                         {
-
                             udemyLinkList.Add(GetUdemyLink(linkPage));
                         }
                     }

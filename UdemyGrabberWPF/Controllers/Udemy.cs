@@ -18,8 +18,10 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task RunAsync(List<string> udemyLinkList)
+        public async Task<int> RunAsync(List<string> udemyLinkList)
         {
+            int numberEnrolled = 0;
+            bool successEnroll;
             if (udemyLinkList != null)
             {
                 foreach (string udemyLink in udemyLinkList)
@@ -34,10 +36,15 @@ namespace UdemyGrabberWPF.Controllers
                     bool purchased = await CheckPurchasedAsync(courseId);
                     if (!purchased)
                     {
-                        await EnrollAsync(courseId, udemyLink);
+                        successEnroll = await EnrollAsync(courseId, udemyLink);
+                        if (successEnroll)
+                        {
+                            numberEnrolled++;
+                        }
                     }
                 }
             }
+            return numberEnrolled;
         }
         private string GetCourseId(string udemyLink)
         {
@@ -97,7 +104,7 @@ namespace UdemyGrabberWPF.Controllers
             client.DefaultRequestHeaders.Add("x-checkout-version", "2");
             client.DefaultRequestHeaders.Add("X-CSRFToken", mainWindow.CSRFToken.Text);
         }
-        private async Task EnrollAsync(string courseId, string udemyLink)
+        private async Task<bool> EnrollAsync(string courseId, string udemyLink)
         {
             string url = "https://www.udemy.com/payment/checkout-submit/";
             Uri myUri = new Uri(udemyLink);
@@ -105,7 +112,7 @@ namespace UdemyGrabberWPF.Controllers
             if (string.IsNullOrEmpty(couponCode))
             {
                 await mainWindow.WriteInfo("Can not find coupon");
-                return;
+                return false;
             }
 
             CheckoutSubmitRequest request = new CheckoutSubmitRequest();
@@ -135,15 +142,18 @@ namespace UdemyGrabberWPF.Controllers
                 if (purchasedInfo.message == null)
                 {
                     await mainWindow.WriteInfo($"Enroll successfully {purchasedInfo}");
+                    return true;
                 }
                 else
                 {
                     await mainWindow.WriteInfo("Coupon expired");
+                    return false;
                 }
             }
             else
             {
                 await mainWindow.WriteInfo(response.ReasonPhrase);
+                return false;
             }
         }
     }
