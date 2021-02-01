@@ -26,17 +26,24 @@
             </Grid>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="right">
-            <ScrollViewer>
-                <RichTextBox Name="Info" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="0">
-                    <RichTextBox.Resources>
-                        <Style TargetType="{x:Type Paragraph}">
-                            <Setter Property="Margin" Value="0"/>
-                        </Style>
-                    </RichTextBox.Resources>
-                    <FlowDocument>
-                    </FlowDocument>
-                </RichTextBox>
-            </ScrollViewer>
+            <DockPanel LastChildFill="true">
+                <Border DockPanel.Dock="Bottom">
+                    <ProgressBar Height="30" Name="Progress"></ProgressBar>
+                </Border>
+                <Border DockPanel.Dock="Top">
+                    <ScrollViewer>
+                        <RichTextBox Name="Info" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="0">
+                            <RichTextBox.Resources>
+                                <Style TargetType="{x:Type Paragraph}">
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </RichTextBox.Resources>
+                            <FlowDocument>
+                            </FlowDocument>
+                        </RichTextBox>
+                    </ScrollViewer>
+                </Border>
+            </DockPanel>
         </Border>
     </DockPanel>
 </Window>

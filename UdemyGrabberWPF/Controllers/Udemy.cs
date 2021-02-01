@@ -18,12 +18,13 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<int> RunAsync(List<string> udemyLinkList)
+        public async Task<int> RunAsync(List<string> udemyLinkList, double startStep, double finishStep)
         {
             int numberEnrolled = 0;
             bool successEnroll;
             if (udemyLinkList != null)
             {
+                double progressStep = (finishStep - startStep) / udemyLinkList.Count;
                 foreach (string udemyLink in udemyLinkList)
                 {
                     await mainWindow.WriteInfo(udemyLink, InfoType.Info);
@@ -31,6 +32,7 @@ namespace UdemyGrabberWPF.Controllers
                     if (string.IsNullOrEmpty(courseId))
                     {
                         await mainWindow.WriteInfo("Can not get course id", InfoType.Error);
+                        mainWindow.Progress.Value += progressStep;
                         continue;
                     }
                     bool purchased = await CheckPurchasedAsync(courseId);
@@ -42,8 +44,10 @@ namespace UdemyGrabberWPF.Controllers
                             numberEnrolled++;
                         }
                     }
+                    mainWindow.Progress.Value += progressStep;
                 }
             }
+            mainWindow.Progress.Value = finishStep;
             return numberEnrolled;
         }
         private string GetCourseId(string udemyLink)
