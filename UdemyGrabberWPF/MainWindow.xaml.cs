@@ -116,6 +116,7 @@ namespace UdemyGrabberWPF
                 _ => Brushes.Black,
             };
             Info.Document.Blocks.Add(para);
+            Scroll.ScrollToBottom();
             await Task.Delay(3);
         }
     }
