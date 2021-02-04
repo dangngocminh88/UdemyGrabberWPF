@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UdemyGrabberWPF.Models;
 
@@ -12,7 +13,7 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<List<string>> CreateUdemyLinkList(int maxPage)
+        public async Task<List<string>> CreateUdemyLinkList(int maxPage, CancellationTokenSource cancellationTokenSource)
         {
             if (maxPage == 0)
             {
@@ -33,12 +34,20 @@ namespace UdemyGrabberWPF.Controllers
                     url = $"https://udemycoupon.learnviral.com/coupon-category/free100-discount/page/{page}/";
                 }
                 await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
+                if (cancellationTokenSource.IsCancellationRequested)
+                {
+                    return null;
+                }
                 doc = web.Load(url);
                 HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//a[@data-clipboard-text='Redeem Offer']");
                 if (linkList != null)
                 {
                     foreach (HtmlNode link in linkList)
                     {
+                        if (cancellationTokenSource.IsCancellationRequested)
+                        {
+                            return null;
+                        }
                         string udemyLink = link?.Attributes["href"]?.Value;
                         if (!string.IsNullOrEmpty(udemyLink))
                         {

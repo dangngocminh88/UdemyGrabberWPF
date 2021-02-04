@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using UdemyGrabberWPF.Models;
@@ -18,7 +19,7 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<int> RunAsync(List<string> udemyLinkList, double startStep, double finishStep)
+        public async Task<int> RunAsync(List<string> udemyLinkList, CancellationTokenSource cancellationTokenSource, double startStep, double finishStep)
         {
             int numberEnrolled = 0;
             bool successEnroll;
@@ -28,6 +29,10 @@ namespace UdemyGrabberWPF.Controllers
                 foreach (string udemyLink in udemyLinkList)
                 {
                     await mainWindow.WriteInfo(udemyLink, InfoType.Info);
+                    if (cancellationTokenSource.IsCancellationRequested)
+                    {
+                        return numberEnrolled;
+                    }
                     string courseId = GetCourseId(udemyLink);
                     if (string.IsNullOrEmpty(courseId))
                     {
@@ -35,9 +40,17 @@ namespace UdemyGrabberWPF.Controllers
                         mainWindow.Progress.Value += progressStep;
                         continue;
                     }
+                    if (cancellationTokenSource.IsCancellationRequested)
+                    {
+                        return numberEnrolled;
+                    }
                     bool purchased = await CheckPurchasedAsync(courseId);
                     if (!purchased)
                     {
+                        if (cancellationTokenSource.IsCancellationRequested)
+                        {
+                            return numberEnrolled;
+                        }
                         successEnroll = await EnrollAsync(courseId, udemyLink);
                         if (successEnroll)
                         {

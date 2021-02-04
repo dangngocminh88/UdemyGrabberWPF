@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UdemyGrabberWPF.Models;
 
@@ -12,7 +13,7 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<List<string>> CreateUdemyLinkList(int maxPage)
+        public async Task<List<string>> CreateUdemyLinkList(int maxPage, CancellationTokenSource cancellationTokenSource)
         {
             if (maxPage == 0)
             {
@@ -33,12 +34,20 @@ namespace UdemyGrabberWPF.Controllers
                     url = $"https://www.tutorialbar.com/all-courses/page/{page}/";
                 }
                 await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
+                if (cancellationTokenSource.IsCancellationRequested)
+                {
+                    return null;
+                }
                 doc = web.Load(url);
                 HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//h3[@class='mb15 mt0 font110 mobfont100 fontnormal lineheight20']");
                 if (linkList != null)
                 {
                     foreach (HtmlNode link in linkList)
                     {
+                        if (cancellationTokenSource.IsCancellationRequested)
+                        {
+                            return null;
+                        }
                         string linkPage = link?.ChildNodes["a"]?.Attributes["href"]?.Value;
                         if (!string.IsNullOrEmpty(linkPage))
                         {

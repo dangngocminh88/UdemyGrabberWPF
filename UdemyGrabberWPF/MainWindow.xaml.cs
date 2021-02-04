@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
@@ -14,6 +15,7 @@ namespace UdemyGrabberWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        CancellationTokenSource cancellationTokenSource = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -41,6 +43,7 @@ namespace UdemyGrabberWPF
             {
                 return;
             }
+            ChangeState(true);
             Udemy udemy = new Udemy(Main);
             int numberEnrolled = 0;
             Progress.Value = 0;
@@ -48,26 +51,27 @@ namespace UdemyGrabberWPF
             if (YoFreeSampleChk.IsChecked ?? false)
             {
                 YoFreeSample yoFreeSample = new YoFreeSample(Main);
-                List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList();
+                List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource);
                 Progress.Value += 1;
-                numberEnrolled += await udemy.RunAsync(udemyLinkList, Progress.Value, Progress.Value + progressStep - 1);
+                numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
             }
             if (TutorialBarChk.IsChecked ?? false)
             {
                 TutorialBar tutorialBar = new TutorialBar(Main);
-                List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10);
+                List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10, cancellationTokenSource);
                 Progress.Value += 1;
-                numberEnrolled += await udemy.RunAsync(udemyLinkList, Progress.Value, Progress.Value + progressStep - 1);
+                numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
             }
             if (LearnViral.IsChecked ?? false)
             {
                 LearnViral learnViral = new LearnViral(Main);
-                List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10);
+                List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource);
                 Progress.Value += 1;
-                numberEnrolled += await udemy.RunAsync(udemyLinkList, Progress.Value, Progress.Value + progressStep - 1);
+                numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
             }
             Progress.Value = 100;
             MessageBox.Show($"{numberEnrolled} course enrolled");
+            ChangeState(false);
         }
         private bool ValidateStart()
         {
@@ -105,6 +109,17 @@ namespace UdemyGrabberWPF
             }
             return 100 * 1.0 / numberWebsite;
         }
+        private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult confirmResult = MessageBox.Show("Are you sure to stop?", "Confirm Stop!!", MessageBoxButton.YesNo);
+            if (confirmResult == MessageBoxResult.Yes)
+            {
+                if (cancellationTokenSource != null)
+                {
+                    cancellationTokenSource.Cancel();
+                }
+            }
+        }
         public async Task WriteInfo(string content, InfoType infoType)
         {
             Paragraph para = new Paragraph();
@@ -118,6 +133,23 @@ namespace UdemyGrabberWPF
             Info.Document.Blocks.Add(para);
             Scroll.ScrollToBottom();
             await Task.Delay(3);
+        }
+        private void ChangeState(bool inProgress)
+        {
+            ClientId.IsEnabled = !inProgress;
+            AccessToken.IsEnabled = !inProgress;
+            CSRFToken.IsEnabled = !inProgress;
+            WebsiteGroup.IsEnabled = !inProgress;
+            Start.IsEnabled = !inProgress;
+            Stop.IsEnabled = inProgress;
+            if (inProgress)
+            {
+                cancellationTokenSource = new CancellationTokenSource();
+            }
+            else
+            {
+                cancellationTokenSource = null;
+            }
         }
     }
 }

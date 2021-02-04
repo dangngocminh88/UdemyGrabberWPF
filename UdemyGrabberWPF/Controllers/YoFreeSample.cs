@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UdemyGrabberWPF.Models;
 
@@ -12,18 +13,26 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<List<string>> CreateUdemyLinkList()
+        public async Task<List<string>> CreateUdemyLinkList(CancellationTokenSource cancellationTokenSource)
         {
             const string url = "https://yofreesamples.com/courses/free-discounted-udemy-courses-list/";
             await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
             List<string> udemyLinkList = new List<string>();
             HtmlWeb web = new HtmlWeb();
+            if (cancellationTokenSource.IsCancellationRequested)
+            { 
+                return null; 
+            }
             HtmlDocument doc = web.Load(url);
             HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//a[@class='btn btn-md btn-success']");
             if (linkList != null)
             {
                 foreach (HtmlNode link in linkList)
                 {
+                    if (cancellationTokenSource.IsCancellationRequested)
+                    {
+                        return null;
+                    }
                     udemyLinkList.Add(link.Attributes["href"].Value);
                 }
             }

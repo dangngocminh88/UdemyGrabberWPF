@@ -15,14 +15,15 @@
                 <TextBox Name="AccessToken" HorizontalAlignment="Left" Margin="99,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
                 <Label Content="X-CSRFToken" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top"/>
                 <TextBox Name="CSRFToken" HorizontalAlignment="Left" Margin="99,81,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
-                <GroupBox Header="Choose Website" Margin="10,117,240,0">
+                <GroupBox Name="WebsiteGroup" Header="Choose Website" Margin="10,117,240,0">
                     <Grid>
                         <CheckBox Name="YoFreeSampleChk" Content="YoFreeSample" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
                         <CheckBox Name="TutorialBarChk" Content="TutorialBar" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" IsChecked="True"/>
                         <CheckBox Name="LearnViral" Content="LearnViral" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="True"/>
                     </Grid>
                 </GroupBox>
-                <Button Name="Start" Content="Start" HorizontalAlignment="Left" Margin="249,134,0,0" VerticalAlignment="Top" Width="108" Click="Start_Click" Height="53" RenderTransformOrigin="0.528,1.34"/>
+                <Button Name="Start" Content="Start" HorizontalAlignment="Left" Margin="234,134,0,0" VerticalAlignment="Top" Width="108" Click="Start_Click" Height="53" RenderTransformOrigin="0.528,1.34"/>
+                <Button Name="Stop" Content="Stop" HorizontalAlignment="Left" Margin="234,204,0,0" VerticalAlignment="Top" Width="108" Click="Stop_Click" Height="53" RenderTransformOrigin="0.528,1.34" IsEnabled="False"/>
             </Grid>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="right">
