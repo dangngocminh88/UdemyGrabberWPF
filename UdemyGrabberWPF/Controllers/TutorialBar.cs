@@ -34,20 +34,14 @@ namespace UdemyGrabberWPF.Controllers
                     url = $"https://www.tutorialbar.com/all-courses/page/{page}/";
                 }
                 await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
-                if (cancellationTokenSource.IsCancellationRequested)
-                {
-                    return null;
-                }
+                cancellationTokenSource.Token.ThrowIfCancellationRequested();
                 doc = web.Load(url);
                 HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//h3[@class='mb15 mt0 font110 mobfont100 fontnormal lineheight20']");
                 if (linkList != null)
                 {
                     foreach (HtmlNode link in linkList)
                     {
-                        if (cancellationTokenSource.IsCancellationRequested)
-                        {
-                            return null;
-                        }
+                        cancellationTokenSource.Token.ThrowIfCancellationRequested();
                         string linkPage = link?.ChildNodes["a"]?.Attributes["href"]?.Value;
                         if (!string.IsNullOrEmpty(linkPage))
                         {

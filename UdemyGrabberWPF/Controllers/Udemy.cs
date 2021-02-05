@@ -29,10 +29,7 @@ namespace UdemyGrabberWPF.Controllers
                 foreach (string udemyLink in udemyLinkList)
                 {
                     await mainWindow.WriteInfo(udemyLink, InfoType.Info);
-                    if (cancellationTokenSource.IsCancellationRequested)
-                    {
-                        return numberEnrolled;
-                    }
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     string courseId = GetCourseId(udemyLink);
                     if (string.IsNullOrEmpty(courseId))
                     {
@@ -40,17 +37,11 @@ namespace UdemyGrabberWPF.Controllers
                         mainWindow.Progress.Value += progressStep;
                         continue;
                     }
-                    if (cancellationTokenSource.IsCancellationRequested)
-                    {
-                        return numberEnrolled;
-                    }
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     bool purchased = await CheckPurchasedAsync(courseId);
                     if (!purchased)
                     {
-                        if (cancellationTokenSource.IsCancellationRequested)
-                        {
-                            return numberEnrolled;
-                        }
+                        cancellationTokenSource.Token.ThrowIfCancellationRequested();
                         successEnroll = await EnrollAsync(courseId, udemyLink);
                         if (successEnroll)
                         {

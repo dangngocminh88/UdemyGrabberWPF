@@ -34,20 +34,14 @@ namespace UdemyGrabberWPF.Controllers
                     url = $"https://udemycoupon.learnviral.com/coupon-category/free100-discount/page/{page}/";
                 }
                 await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
-                if (cancellationTokenSource.IsCancellationRequested)
-                {
-                    return null;
-                }
+                cancellationTokenSource.Token.ThrowIfCancellationRequested();
                 doc = web.Load(url);
                 HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//a[@data-clipboard-text='Redeem Offer']");
                 if (linkList != null)
                 {
                     foreach (HtmlNode link in linkList)
                     {
-                        if (cancellationTokenSource.IsCancellationRequested)
-                        {
-                            return null;
-                        }
+                        cancellationTokenSource.Token.ThrowIfCancellationRequested();
                         string udemyLink = link?.Attributes["href"]?.Value;
                         if (!string.IsNullOrEmpty(udemyLink))
                         {

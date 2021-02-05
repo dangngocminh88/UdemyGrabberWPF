@@ -29,10 +29,7 @@ namespace UdemyGrabberWPF.Controllers
             {
                 foreach (HtmlNode link in linkList)
                 {
-                    if (cancellationTokenSource.IsCancellationRequested)
-                    {
-                        return null;
-                    }
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     udemyLinkList.Add(link.Attributes["href"].Value);
                 }
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,30 +49,75 @@ namespace UdemyGrabberWPF
             int numberEnrolled = 0;
             Progress.Value = 0;
             double progressStep = CountProgressStep();
-            if (YoFreeSampleChk.IsChecked ?? false)
+            try
             {
-                YoFreeSample yoFreeSample = new YoFreeSample(Main);
-                List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource);
-                Progress.Value += 1;
-                numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
+                // Get Coupon of YoFreeSample
+                try
+                {
+                    if (YoFreeSampleChk.IsChecked ?? false)
+                    {
+                        YoFreeSample yoFreeSample = new YoFreeSample(Main);
+                        List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource);
+                        Progress.Value += 1;
+                        numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    await WriteInfo(ex.Message, InfoType.Error);
+                }
+                // Get Coupon of TutorialBar
+                try
+                {
+                    if (TutorialBarChk.IsChecked ?? false)
+                    {
+                        TutorialBar tutorialBar = new TutorialBar(Main);
+                        List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10, cancellationTokenSource);
+                        Progress.Value += 1;
+                        numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    await WriteInfo(ex.Message, InfoType.Error);
+                }
+                // Get Coupon of LearnViral
+                try
+                {
+                    if (LearnViral.IsChecked ?? false)
+                    {
+                        LearnViral learnViral = new LearnViral(Main);
+                        List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource);
+                        Progress.Value += 1;
+                        numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    await WriteInfo(ex.Message, InfoType.Error);
+                }
             }
-            if (TutorialBarChk.IsChecked ?? false)
+            catch (OperationCanceledException)
             {
-                TutorialBar tutorialBar = new TutorialBar(Main);
-                List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10, cancellationTokenSource);
-                Progress.Value += 1;
-                numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
             }
-            if (LearnViral.IsChecked ?? false)
+            finally
             {
-                LearnViral learnViral = new LearnViral(Main);
-                List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource);
-                Progress.Value += 1;
-                numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
+                Progress.Value = 100;
+                MessageBox.Show($"{numberEnrolled} course enrolled");
+                ChangeState(false);
             }
-            Progress.Value = 100;
-            MessageBox.Show($"{numberEnrolled} course enrolled");
-            ChangeState(false);
         }
         private bool ValidateStart()
         {
@@ -148,7 +194,7 @@ namespace UdemyGrabberWPF
             }
             else
             {
-                cancellationTokenSource = null;
+                cancellationTokenSource.Dispose();
             }
         }
     }
