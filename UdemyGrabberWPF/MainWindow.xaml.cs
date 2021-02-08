@@ -52,61 +52,67 @@ namespace UdemyGrabberWPF
             try
             {
                 // Get Coupon of YoFreeSample
-                try
+                if (YoFreeSampleChk.IsChecked ?? false)
                 {
-                    if (YoFreeSampleChk.IsChecked ?? false)
+                    try
                     {
+                        WebsiteProcessingInfo.Content = "Getting coupon from yofreesamples.com";
                         YoFreeSample yoFreeSample = new YoFreeSample(Main);
                         List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource);
                         Progress.Value += 1;
+                        WebsiteProcessingInfo.Content = "Grabbing courses from yofreesamples.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
                     }
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    await WriteInfo(ex.Message, InfoType.Error);
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        await WriteInfo(ex.Message, InfoType.Error);
+                    }
                 }
                 // Get Coupon of TutorialBar
-                try
+                if (TutorialBarChk.IsChecked ?? false)
                 {
-                    if (TutorialBarChk.IsChecked ?? false)
+                    try
                     {
+                        WebsiteProcessingInfo.Content = "Getting coupon from tutorialbar.com";
                         TutorialBar tutorialBar = new TutorialBar(Main);
                         List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10, cancellationTokenSource);
                         Progress.Value += 1;
+                        WebsiteProcessingInfo.Content = "Grabbing courses from tutorialbar.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
                     }
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    await WriteInfo(ex.Message, InfoType.Error);
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        await WriteInfo(ex.Message, InfoType.Error);
+                    }
                 }
                 // Get Coupon of LearnViral
-                try
+                if (LearnViral.IsChecked ?? false)
                 {
-                    if (LearnViral.IsChecked ?? false)
+                    try
                     {
+                        WebsiteProcessingInfo.Content = "Getting coupon from learnviral.com";
                         LearnViral learnViral = new LearnViral(Main);
                         List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource);
                         Progress.Value += 1;
+                        WebsiteProcessingInfo.Content = "Grabbing courses from learnviral.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
                     }
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    await WriteInfo(ex.Message, InfoType.Error);
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        await WriteInfo(ex.Message, InfoType.Error);
+                    }
                 }
             }
             catch (OperationCanceledException)

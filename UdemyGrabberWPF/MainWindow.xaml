@@ -31,7 +31,10 @@
                 <Border DockPanel.Dock="Bottom">
                     <ProgressBar Height="30" Name="Progress"></ProgressBar>
                 </Border>
-                <Border DockPanel.Dock="Top">
+                <Border DockPanel.Dock="Bottom">
+                    <Label Name="WebsiteProcessingInfo"></Label>
+                </Border>
+                <Border BorderThickness="0 0 0 1" BorderBrush="Black" DockPanel.Dock="Top">
                     <ScrollViewer Name="Scroll">
                         <RichTextBox Name="Info" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="0">
                             <RichTextBox.Resources>
