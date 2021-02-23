@@ -30,17 +30,33 @@ namespace UdemyGrabberWPF.Controllers
                 {
                     await mainWindow.WriteInfo(udemyLink, InfoType.Info);
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                    string courseId = GetCourseId(udemyLink);
+
+                    HtmlWeb web = new HtmlWeb();
+                    HtmlDocument doc = web.Load(udemyLink);
+
+                    string courseId = GetCourseId(doc);
                     if (string.IsNullOrEmpty(courseId))
                     {
                         await mainWindow.WriteInfo("Can not get course id", InfoType.Error);
                         mainWindow.Progress.Value += progressStep;
                         continue;
                     }
+
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
                     bool purchased = await CheckPurchasedAsync(courseId);
                     if (!purchased)
                     {
+                        if (mainWindow.chkMinimumRating.IsChecked ?? false)
+                        {
+                            double rating = GetRating(doc);
+                            if (rating < 4.0)
+                            {
+                                await mainWindow.WriteInfo($"course rating is {rating}", InfoType.Error);
+                                mainWindow.Progress.Value += progressStep;
+                                continue;
+                            }
+                        }
                         cancellationTokenSource.Token.ThrowIfCancellationRequested();
                         successEnroll = await EnrollAsync(courseId, udemyLink);
                         if (successEnroll)
@@ -54,13 +70,27 @@ namespace UdemyGrabberWPF.Controllers
             mainWindow.Progress.Value = finishStep;
             return numberEnrolled;
         }
-        private string GetCourseId(string udemyLink)
+        private string GetCourseId(HtmlDocument doc)
         {
-            HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load(udemyLink);
             HtmlNode body = doc.DocumentNode.SelectSingleNode("//body");
             string courseId = body?.Attributes["data-clp-course-id"]?.Value;
             return courseId;
+        }
+        private double GetRating(HtmlDocument doc)
+        {
+            HtmlNodeCollection rating = doc.DocumentNode.SelectNodes("//span[@data-purpose='rating-number']");
+            if (rating.Count > 0)
+            {
+                try
+                {
+                    return double.Parse(rating[0].InnerText);
+                }
+                catch (InvalidCastException)
+                {
+
+                }
+            }
+            return 0;
         }
         private async Task<bool> CheckPurchasedAsync(string udemyId)
         {
