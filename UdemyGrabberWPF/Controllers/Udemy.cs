@@ -26,6 +26,7 @@ namespace UdemyGrabberWPF.Controllers
             if (udemyLinkList != null)
             {
                 double progressStep = (finishStep - startStep) / udemyLinkList.Count;
+                double minimumRating = double.Parse(mainWindow.txtMinimumRating.Text);
                 foreach (string udemyLink in udemyLinkList)
                 {
                     await mainWindow.WriteInfo(udemyLink, InfoType.Info);
@@ -41,22 +42,22 @@ namespace UdemyGrabberWPF.Controllers
                         mainWindow.Progress.Value += progressStep;
                         continue;
                     }
+                    if (mainWindow.chkMinimumRating.IsChecked ?? false)
+                    {
+                        double rating = GetRating(doc);
+                        if (rating < minimumRating)
+                        {
+                            await mainWindow.WriteInfo($"course rating is {rating}", InfoType.Error);
+                            mainWindow.Progress.Value += progressStep;
+                            continue;
+                        }
+                    }
 
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                     bool purchased = await CheckPurchasedAsync(courseId);
                     if (!purchased)
                     {
-                        if (mainWindow.chkMinimumRating.IsChecked ?? false)
-                        {
-                            double rating = GetRating(doc);
-                            if (rating < 4.0)
-                            {
-                                await mainWindow.WriteInfo($"course rating is {rating}", InfoType.Error);
-                                mainWindow.Progress.Value += progressStep;
-                                continue;
-                            }
-                        }
                         cancellationTokenSource.Token.ThrowIfCancellationRequested();
                         successEnroll = await EnrollAsync(courseId, udemyLink);
                         if (successEnroll)

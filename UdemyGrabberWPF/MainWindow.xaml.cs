@@ -142,6 +142,14 @@ namespace UdemyGrabberWPF
                 MessageBox.Show("X-CSRFToken is required");
                 return false;
             }
+            if (chkMinimumRating.IsChecked ?? false)
+            {
+                if (!double.TryParse(txtMinimumRating.Text, out _))
+                {
+                    MessageBox.Show("Can not check minimum rating");
+                    return false;
+                }
+            }
             return true;
         }
         private double CountProgressStep()
@@ -172,6 +180,15 @@ namespace UdemyGrabberWPF
                 }
             }
         }
+
+        private void txtMinimumRating_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!double.TryParse(txtMinimumRating.Text, out _))
+            {
+                txtMinimumRating.Text = "0";
+            }
+        }
+
         public async Task WriteInfo(string content, InfoType infoType)
         {
             Paragraph para = new Paragraph();
@@ -186,6 +203,7 @@ namespace UdemyGrabberWPF
             Scroll.ScrollToBottom();
             await Task.Delay(3);
         }
+
         private void ChangeState(bool inProgress)
         {
             ClientId.IsEnabled = !inProgress;
