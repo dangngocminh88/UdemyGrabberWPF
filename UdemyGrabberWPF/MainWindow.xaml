@@ -16,12 +16,13 @@
                 <Label Content="X-CSRFToken" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top"/>
                 <TextBox Name="CSRFToken" HorizontalAlignment="Left" Margin="99,81,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
                 <CheckBox Name="chkMinimumRating" Content="Only grab course with           rating or higher" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top"/>
-                <TextBox Name="txtMinimumRating" Text="4.0" HorizontalAlignment="Left" Margin="150,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" LostFocus="txtMinimumRating_LostFocus"/>
+                <TextBox Name="txtMinimumRating" Text="4.0" HorizontalAlignment="Left" Margin="150,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" LostFocus="TxtMinimumRating_LostFocus"/>
                 <GroupBox Name="WebsiteGroup" Header="Choose Website" Margin="10,150,240,0">
                     <Grid>
-                        <CheckBox Name="YoFreeSampleChk" Content="YoFreeSample" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
-                        <CheckBox Name="TutorialBarChk" Content="TutorialBar" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" IsChecked="True"/>
-                        <CheckBox Name="LearnViral" Content="LearnViral" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                        <CheckBox Name="DiscUdemy" Content="DiscUdemy" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                        <CheckBox Name="LearnViral" Content="LearnViral" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                        <CheckBox Name="TutorialBarChk" Content="TutorialBar" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                        <CheckBox Name="YoFreeSampleChk" Content="YoFreeSample" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="True"/>
                     </Grid>
                 </GroupBox>
                 <Button Name="Start" Content="Start" HorizontalAlignment="Left" Margin="234,160,0,0" VerticalAlignment="Top" Width="108" Click="Start_Click" Height="53" RenderTransformOrigin="0.528,1.34"/>

@@ -51,16 +51,37 @@ namespace UdemyGrabberWPF
             double progressStep = CountProgressStep();
             try
             {
-                // Get Coupon of YoFreeSample
-                if (YoFreeSampleChk.IsChecked ?? false)
+                // Get Coupon of DiscUdemy
+                if (DiscUdemy.IsChecked ?? false)
                 {
                     try
                     {
-                        WebsiteProcessingInfo.Content = "Getting coupon from yofreesamples.com";
-                        YoFreeSample yoFreeSample = new YoFreeSample(Main);
-                        List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource);
+                        WebsiteProcessingInfo.Content = "Getting coupon from discudemy.com";
+                        DiscUdemy discUdemy = new DiscUdemy(Main);
+                        List<string> udemyLinkList = await discUdemy.CreateUdemyLinkList(10, cancellationTokenSource);
                         Progress.Value += 1;
-                        WebsiteProcessingInfo.Content = "Grabbing courses from yofreesamples.com";
+                        WebsiteProcessingInfo.Content = "Grabbing courses from discudemy.com";
+                        numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        await WriteInfo(ex.Message, InfoType.Error);
+                    }
+                }
+                // Get Coupon of LearnViral
+                if (LearnViral.IsChecked ?? false)
+                {
+                    try
+                    {
+                        WebsiteProcessingInfo.Content = "Getting coupon from learnviral.com";
+                        LearnViral learnViral = new LearnViral(Main);
+                        List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource);
+                        Progress.Value += 1;
+                        WebsiteProcessingInfo.Content = "Grabbing courses from learnviral.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
                     }
                     catch (OperationCanceledException)
@@ -93,16 +114,16 @@ namespace UdemyGrabberWPF
                         await WriteInfo(ex.Message, InfoType.Error);
                     }
                 }
-                // Get Coupon of LearnViral
-                if (LearnViral.IsChecked ?? false)
+                // Get Coupon of YoFreeSample
+                if (YoFreeSampleChk.IsChecked ?? false)
                 {
                     try
                     {
-                        WebsiteProcessingInfo.Content = "Getting coupon from learnviral.com";
-                        LearnViral learnViral = new LearnViral(Main);
-                        List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource);
+                        WebsiteProcessingInfo.Content = "Getting coupon from yofreesamples.com";
+                        YoFreeSample yoFreeSample = new YoFreeSample(Main);
+                        List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource);
                         Progress.Value += 1;
-                        WebsiteProcessingInfo.Content = "Grabbing courses from learnviral.com";
+                        WebsiteProcessingInfo.Content = "Grabbing courses from yofreesamples.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
                     }
                     catch (OperationCanceledException)
@@ -155,7 +176,11 @@ namespace UdemyGrabberWPF
         private double CountProgressStep()
         {
             int numberWebsite = 0;
-            if (YoFreeSampleChk.IsChecked ?? false)
+            if (DiscUdemy.IsChecked ?? false)
+            {
+                numberWebsite++;
+            }
+            if (LearnViral.IsChecked ?? false)
             {
                 numberWebsite++;
             }
@@ -163,7 +188,7 @@ namespace UdemyGrabberWPF
             {
                 numberWebsite++;
             }
-            if (LearnViral.IsChecked ?? false)
+            if (YoFreeSampleChk.IsChecked ?? false)
             {
                 numberWebsite++;
             }
@@ -181,7 +206,7 @@ namespace UdemyGrabberWPF
             }
         }
 
-        private void txtMinimumRating_LostFocus(object sender, RoutedEventArgs e)
+        private void TxtMinimumRating_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!double.TryParse(txtMinimumRating.Text, out _))
             {

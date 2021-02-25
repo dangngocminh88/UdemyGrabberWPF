@@ -6,10 +6,10 @@ using UdemyGrabberWPF.Models;
 
 namespace UdemyGrabberWPF.Controllers
 {
-    public class LearnViral
+    public class DiscUdemy
     {
         private readonly MainWindow mainWindow;
-        public LearnViral(MainWindow mainWindow)
+        public DiscUdemy(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
         }
@@ -27,25 +27,29 @@ namespace UdemyGrabberWPF.Controllers
             {
                 if (page == 1)
                 {
-                    url = "https://udemycoupon.learnviral.com/coupon-category/free100-discount/";
+                    url = "https://www.discudemy.com/all";
                 }
                 else
                 {
-                    url = $"https://udemycoupon.learnviral.com/coupon-category/free100-discount/page/{page}/";
+                    url = $"https://www.discudemy.com/all/{page}/";
                 }
                 await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
 
                 cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                 doc = web.Load(url);
-                HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//a[@data-clipboard-text='Redeem Offer']");
+                HtmlNodeCollection linkList = doc?.DocumentNode?.SelectNodes("//a[@class='card-header']");
                 if (linkList != null)
                 {
                     foreach (HtmlNode link in linkList)
                     {
                         cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                        string udemyLink = link?.Attributes["href"]?.Value;
+                        string link2 = link?.Attributes["href"]?.Value;
+                        string subLink2 = link2.Substring(link2.LastIndexOf("/"));
+                        string link3 = $"https://www.discudemy.com/go/{subLink2}";
+                        doc = web.Load(link3);
+                        string udemyLink = doc?.DocumentNode?.SelectSingleNode("//div[@class='ui segment']")?.ChildNodes["a"]?.Attributes["href"]?.Value;
                         if (!string.IsNullOrEmpty(udemyLink))
                         {
                             udemyLinkList.Add(udemyLink);
