@@ -51,6 +51,27 @@ namespace UdemyGrabberWPF
             double progressStep = CountProgressStep();
             try
             {
+                // Get Coupon of CourseMania
+                if (CourseMania.IsChecked ?? false)
+                {
+                    try
+                    {
+                        WebsiteProcessingInfo.Content = "Getting coupon from coursemania.xyz";
+                        CourseMania courseMania = new CourseMania(Main);
+                        List<string> udemyLinkList = await courseMania.CreateUdemyLinkList(cancellationTokenSource);
+                        Progress.Value += 1;
+                        WebsiteProcessingInfo.Content = "Grabbing courses from coursemania.xyz";
+                        numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        await WriteInfo(ex.Message, InfoType.Error);
+                    }
+                }
                 // Get Coupon of DiscUdemy
                 if (DiscUdemy.IsChecked ?? false)
                 {
@@ -176,6 +197,10 @@ namespace UdemyGrabberWPF
         private double CountProgressStep()
         {
             int numberWebsite = 0;
+            if (CourseMania.IsChecked ?? false)
+            {
+                numberWebsite++;
+            }
             if (DiscUdemy.IsChecked ?? false)
             {
                 numberWebsite++;
