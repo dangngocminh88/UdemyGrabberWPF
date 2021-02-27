@@ -180,7 +180,7 @@ namespace UdemyGrabberWPF.Controllers
                 dynamic purchasedInfo = JsonConvert.DeserializeObject(jsonResponse);
                 if (purchasedInfo.message == null)
                 {
-                    await mainWindow.WriteInfo($"Enroll successfully {purchasedInfo}", InfoType.Sucess);
+                    await mainWindow.WriteInfo($"Enroll successfully {purchasedInfo}", InfoType.Success);
                     return true;
                 }
                 else

@@ -246,7 +246,7 @@ namespace UdemyGrabberWPF
             para.Foreground = infoType switch
             {
                 InfoType.Error => Brushes.Red,
-                InfoType.Sucess => Brushes.Blue,
+                InfoType.Success => Brushes.Blue,
                 _ => Brushes.Black,
             };
             Info.Document.Blocks.Add(para);

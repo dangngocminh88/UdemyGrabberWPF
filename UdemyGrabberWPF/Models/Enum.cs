@@ -4,6 +4,6 @@
     {
         Info,
         Error,
-        Sucess
+        Success
     }
 }
