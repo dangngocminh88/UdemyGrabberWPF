@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using UdemyGrabberWPF.ExtensionMethods;
 using UdemyGrabberWPF.Models;
 
 namespace UdemyGrabberWPF.Controllers
@@ -50,7 +51,7 @@ namespace UdemyGrabberWPF.Controllers
                         string link3 = $"https://www.discudemy.com/go/{subLink2}";
                         doc = web.Load(link3);
                         string udemyLink = doc?.DocumentNode?.SelectSingleNode("//div[@class='ui segment']")?.ChildNodes["a"]?.Attributes["href"]?.Value;
-                        if (!string.IsNullOrEmpty(udemyLink))
+                        if (!string.IsNullOrEmpty(udemyLink) && udemyLink.ValidURL())
                         {
                             udemyLinkList.Add(udemyLink);
                         }

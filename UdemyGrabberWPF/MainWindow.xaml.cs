@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Threading;
 using UdemyGrabberWPF.Controllers;
 using UdemyGrabberWPF.Models;
 
@@ -241,17 +242,20 @@ namespace UdemyGrabberWPF
 
         public async Task WriteInfo(string content, InfoType infoType)
         {
-            Paragraph para = new Paragraph();
-            para.Inlines.Add(new Run(content));
-            para.Foreground = infoType switch
-            {
-                InfoType.Error => Brushes.Red,
-                InfoType.Success => Brushes.Blue,
-                _ => Brushes.Black,
-            };
-            Info.Document.Blocks.Add(para);
-            Scroll.ScrollToBottom();
-            await Task.Delay(3);
+            await Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() => {
+                    Paragraph para = new Paragraph();
+                    para.Inlines.Add(new Run(content));
+                    para.Foreground = infoType switch
+                    {
+                        InfoType.Error => Brushes.Red,
+                        InfoType.Success => Brushes.Blue,
+                        _ => Brushes.Black,
+                    };
+                    Info.Document.Blocks.Add(para);
+                    Scroll.ScrollToBottom();
+                }));
         }
 
         private void ChangeState(bool inProgress)

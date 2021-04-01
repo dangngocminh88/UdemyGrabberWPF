@@ -155,9 +155,9 @@ namespace UdemyGrabberWPF.Controllers
             }
 
             CheckoutSubmitRequest request = new CheckoutSubmitRequest();
-            request.shopping_cart.items[0].buyableId = long.Parse(courseId);
+            request.shopping_info.items[0].buyable.id = long.Parse(courseId);
             //request.shopping_cart.items[0].purchasePrice.currency = "USD";
-            request.shopping_cart.items[0].discountInfo.code = couponCode;
+            request.shopping_info.items[0].discountInfo.code = couponCode;
             string json = JsonConvert.SerializeObject(request);
 
             Uri baseAddress = new Uri("https://www.udemy.com");
@@ -181,6 +181,7 @@ namespace UdemyGrabberWPF.Controllers
                 if (purchasedInfo.message == null)
                 {
                     await mainWindow.WriteInfo($"Enroll successfully {purchasedInfo}", InfoType.Success);
+                    await Task.Delay(10);
                     return true;
                 }
                 else

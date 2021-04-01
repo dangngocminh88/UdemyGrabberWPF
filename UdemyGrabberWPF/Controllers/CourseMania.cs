@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using UdemyGrabberWPF.ExtensionMethods;
 using UdemyGrabberWPF.Models;
 
 namespace UdemyGrabberWPF.Controllers
@@ -30,7 +31,7 @@ namespace UdemyGrabberWPF.Controllers
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                     string udemyLink = course.url;
-                    if(!string.IsNullOrEmpty(udemyLink))
+                    if(!string.IsNullOrEmpty(udemyLink) && udemyLink.ValidURL())
                     {
                         udemyLinkList.Add(udemyLink);
                     }

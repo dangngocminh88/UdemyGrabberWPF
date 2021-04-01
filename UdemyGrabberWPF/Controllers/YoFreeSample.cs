@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using UdemyGrabberWPF.ExtensionMethods;
 using UdemyGrabberWPF.Models;
 
 namespace UdemyGrabberWPF.Controllers
@@ -30,7 +31,11 @@ namespace UdemyGrabberWPF.Controllers
                 foreach (HtmlNode link in linkList)
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                    udemyLinkList.Add(link.Attributes["href"].Value);
+                    string udemyLink = link.Attributes["href"].Value;
+                    if (udemyLink.ValidURL())
+                    {
+                        udemyLinkList.Add(udemyLink);
+                    }
                 }
             }
             return udemyLinkList;
