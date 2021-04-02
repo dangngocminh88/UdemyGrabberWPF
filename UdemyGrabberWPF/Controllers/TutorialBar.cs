@@ -14,14 +14,14 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<List<string>> CreateUdemyLinkList(int maxPage, CancellationTokenSource cancellationTokenSource)
+        public async Task<List<string>> CreateUdemyLinkList(int maxPage, CancellationTokenSource cancellationTokenSource, List<string> checkedCourses)
         {
             if (maxPage == 0)
             {
                 return null;
             }
-            List<string> udemyLinkList = new List<string>();
-            HtmlWeb web = new HtmlWeb();
+            List<string> udemyLinkList = new();
+            HtmlWeb web = new();
             HtmlDocument doc;
             string url;
             for (int page = 1; page < maxPage; page++)
@@ -47,7 +47,7 @@ namespace UdemyGrabberWPF.Controllers
                         if (!string.IsNullOrEmpty(linkPage))
                         {
                             string udemyLink = GetUdemyLink(linkPage);
-                            if (udemyLink.ValidURL())
+                            if (udemyLink.ValidURL(checkedCourses))
                             {
                                 udemyLinkList.Add(udemyLink);
                             }
@@ -57,9 +57,9 @@ namespace UdemyGrabberWPF.Controllers
             }
             return udemyLinkList;
         }
-        private string GetUdemyLink(string linkPage)
+        private static string GetUdemyLink(string linkPage)
         {
-            HtmlWeb web = new HtmlWeb();
+            HtmlWeb web = new();
             HtmlDocument doc = web.Load(linkPage);
             HtmlNode link = doc?.DocumentNode?.SelectNodes("//a[@class='btn_offer_block re_track_btn']")[0];
             string udemyLink = link?.Attributes["href"]?.Value;

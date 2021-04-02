@@ -14,12 +14,12 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<List<string>> CreateUdemyLinkList(CancellationTokenSource cancellationTokenSource)
+        public async Task<List<string>> CreateUdemyLinkList(CancellationTokenSource cancellationTokenSource, List<string> checkedCourses)
         {
             const string url = "https://yofreesamples.com/courses/free-discounted-udemy-courses-list/";
             await mainWindow.WriteInfo($"Getting coupon from {url}", InfoType.Info);
-            List<string> udemyLinkList = new List<string>();
-            HtmlWeb web = new HtmlWeb();
+            List<string> udemyLinkList = new();
+            HtmlWeb web = new();
             if (cancellationTokenSource.IsCancellationRequested)
             { 
                 return null; 
@@ -32,7 +32,7 @@ namespace UdemyGrabberWPF.Controllers
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     string udemyLink = link.Attributes["href"].Value;
-                    if (udemyLink.ValidURL())
+                    if (udemyLink.ValidURL(checkedCourses))
                     {
                         udemyLinkList.Add(udemyLink);
                     }

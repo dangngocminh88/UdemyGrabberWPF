@@ -32,7 +32,7 @@ namespace UdemyGrabberWPF.Controllers
                     await mainWindow.WriteInfo(udemyLink, InfoType.Info);
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                    HtmlWeb web = new HtmlWeb();
+                    HtmlWeb web = new();
                     HtmlDocument doc = web.Load(udemyLink);
 
                     string courseId = GetCourseId(doc);
@@ -71,13 +71,13 @@ namespace UdemyGrabberWPF.Controllers
             mainWindow.Progress.Value = finishStep;
             return numberEnrolled;
         }
-        private string GetCourseId(HtmlDocument doc)
+        private static string GetCourseId(HtmlDocument doc)
         {
             HtmlNode body = doc.DocumentNode.SelectSingleNode("//body");
             string courseId = body?.Attributes["data-clp-course-id"]?.Value;
             return courseId;
         }
-        private double GetRating(HtmlDocument doc)
+        private static double GetRating(HtmlDocument doc)
         {
             HtmlNodeCollection rating = doc.DocumentNode.SelectNodes("//span[@data-purpose='rating-number']");
             if (rating.Count > 0)
@@ -96,7 +96,7 @@ namespace UdemyGrabberWPF.Controllers
         private async Task<bool> CheckPurchasedAsync(string udemyId)
         {
             string url = "https://www.udemy.com/api-2.0/course-landing-components/" + udemyId + "/me/?components=purchase";
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             CreateHeaders(client);
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -123,7 +123,7 @@ namespace UdemyGrabberWPF.Controllers
         private void CreateHeaders(HttpClient client)
         {
             string access_token = mainWindow.AccessToken.Text;
-            Random r = new Random();
+            Random r = new();
             int rInt = r.Next(0, 255);
 
             client.DefaultRequestHeaders.Add("authorization", "Bearer " + access_token);
@@ -146,7 +146,7 @@ namespace UdemyGrabberWPF.Controllers
         private async Task<bool> EnrollAsync(string courseId, string udemyLink)
         {
             const string url = "https://www.udemy.com/payment/checkout-submit/";
-            Uri myUri = new Uri(udemyLink);
+            Uri myUri = new(udemyLink);
             string couponCode = HttpUtility.ParseQueryString(myUri.Query).Get("couponCode");
             if (string.IsNullOrEmpty(couponCode))
             {
@@ -154,20 +154,20 @@ namespace UdemyGrabberWPF.Controllers
                 return false;
             }
 
-            CheckoutSubmitRequest request = new CheckoutSubmitRequest();
+            CheckoutSubmitRequest request = new();
             request.shopping_info.items[0].buyable.id = long.Parse(courseId);
             //request.shopping_cart.items[0].purchasePrice.currency = "USD";
             request.shopping_info.items[0].discountInfo.code = couponCode;
             string json = JsonConvert.SerializeObject(request);
 
-            Uri baseAddress = new Uri("https://www.udemy.com");
-            CookieContainer cookieContainer = new CookieContainer();
-            using HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            Uri baseAddress = new("https://www.udemy.com");
+            CookieContainer cookieContainer = new();
+            using HttpClientHandler handler = new() { CookieContainer = cookieContainer };
 
-            using HttpClient client = new HttpClient(handler);
+            using HttpClient client = new(handler);
             CreateHeaders(client);
             AddHeaderToCheckout(client);
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            StringContent content = new(json, Encoding.UTF8, "application/json");
 
             cookieContainer.Add(baseAddress, new Cookie("X-CSRFToken", mainWindow.CSRFToken.Text));
             cookieContainer.Add(baseAddress, new Cookie("client_id", mainWindow.ClientId.Text));

@@ -16,11 +16,11 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<List<string>> CreateUdemyLinkList(CancellationTokenSource cancellationTokenSource)
+        public async Task<List<string>> CreateUdemyLinkList(CancellationTokenSource cancellationTokenSource, List<string> checkedCourses)
         {
-            List<string> udemyLinkList = new List<string>();
+            List<string> udemyLinkList = new();
             string url = "https://api.coursemania.xyz/api/get_courses"; ;
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
@@ -31,7 +31,7 @@ namespace UdemyGrabberWPF.Controllers
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                     string udemyLink = course.url;
-                    if(!string.IsNullOrEmpty(udemyLink) && udemyLink.ValidURL())
+                    if(!string.IsNullOrEmpty(udemyLink) && udemyLink.ValidURL(checkedCourses))
                     {
                         udemyLinkList.Add(udemyLink);
                     }

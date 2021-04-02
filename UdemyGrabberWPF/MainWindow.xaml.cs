@@ -46,10 +46,11 @@ namespace UdemyGrabberWPF
                 return;
             }
             ChangeState(true);
-            Udemy udemy = new Udemy(Main);
+            Udemy udemy = new(Main);
             int numberEnrolled = 0;
             Progress.Value = 0;
             double progressStep = CountProgressStep();
+            List<string> checkedCourses = new();
             try
             {
                 // Get Coupon of CourseMania
@@ -58,8 +59,8 @@ namespace UdemyGrabberWPF
                     try
                     {
                         WebsiteProcessingInfo.Content = "Getting coupon from coursemania.xyz";
-                        CourseMania courseMania = new CourseMania(Main);
-                        List<string> udemyLinkList = await courseMania.CreateUdemyLinkList(cancellationTokenSource);
+                        CourseMania courseMania = new(Main);
+                        List<string> udemyLinkList = await courseMania.CreateUdemyLinkList(cancellationTokenSource, checkedCourses);
                         Progress.Value += 1;
                         WebsiteProcessingInfo.Content = "Grabbing courses from coursemania.xyz";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
@@ -79,8 +80,8 @@ namespace UdemyGrabberWPF
                     try
                     {
                         WebsiteProcessingInfo.Content = "Getting coupon from discudemy.com";
-                        DiscUdemy discUdemy = new DiscUdemy(Main);
-                        List<string> udemyLinkList = await discUdemy.CreateUdemyLinkList(10, cancellationTokenSource);
+                        DiscUdemy discUdemy = new(Main);
+                        List<string> udemyLinkList = await discUdemy.CreateUdemyLinkList(10, cancellationTokenSource, checkedCourses);
                         Progress.Value += 1;
                         WebsiteProcessingInfo.Content = "Grabbing courses from discudemy.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
@@ -100,8 +101,8 @@ namespace UdemyGrabberWPF
                     try
                     {
                         WebsiteProcessingInfo.Content = "Getting coupon from learnviral.com";
-                        LearnViral learnViral = new LearnViral(Main);
-                        List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource);
+                        LearnViral learnViral = new(Main);
+                        List<string> udemyLinkList = await learnViral.CreateUdemyLinkList(10, cancellationTokenSource, checkedCourses);
                         Progress.Value += 1;
                         WebsiteProcessingInfo.Content = "Grabbing courses from learnviral.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
@@ -121,8 +122,8 @@ namespace UdemyGrabberWPF
                     try
                     {
                         WebsiteProcessingInfo.Content = "Getting coupon from tutorialbar.com";
-                        TutorialBar tutorialBar = new TutorialBar(Main);
-                        List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10, cancellationTokenSource);
+                        TutorialBar tutorialBar = new(Main);
+                        List<string> udemyLinkList = await tutorialBar.CreateUdemyLinkList(10, cancellationTokenSource, checkedCourses);
                         Progress.Value += 1;
                         WebsiteProcessingInfo.Content = "Grabbing courses from tutorialbar.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
@@ -142,8 +143,8 @@ namespace UdemyGrabberWPF
                     try
                     {
                         WebsiteProcessingInfo.Content = "Getting coupon from yofreesamples.com";
-                        YoFreeSample yoFreeSample = new YoFreeSample(Main);
-                        List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource);
+                        YoFreeSample yoFreeSample = new(Main);
+                        List<string> udemyLinkList = await yoFreeSample.CreateUdemyLinkList(cancellationTokenSource, checkedCourses);
                         Progress.Value += 1;
                         WebsiteProcessingInfo.Content = "Grabbing courses from yofreesamples.com";
                         numberEnrolled += await udemy.RunAsync(udemyLinkList, cancellationTokenSource, Progress.Value, Progress.Value + progressStep - 1);
@@ -245,7 +246,7 @@ namespace UdemyGrabberWPF
             await Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
                 new Action(() => {
-                    Paragraph para = new Paragraph();
+                    Paragraph para = new();
                     para.Inlines.Add(new Run(content));
                     para.Foreground = infoType switch
                     {

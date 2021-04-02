@@ -14,14 +14,14 @@ namespace UdemyGrabberWPF.Controllers
         {
             this.mainWindow = mainWindow;
         }
-        public async Task<List<string>> CreateUdemyLinkList(int maxPage, CancellationTokenSource cancellationTokenSource)
+        public async Task<List<string>> CreateUdemyLinkList(int maxPage, CancellationTokenSource cancellationTokenSource, List<string> checkedCourses)
         {
             if (maxPage == 0)
             {
                 return null;
             }
-            List<string> udemyLinkList = new List<string>();
-            HtmlWeb web = new HtmlWeb();
+            List<string> udemyLinkList = new();
+            HtmlWeb web = new();
             HtmlDocument doc;
             string url;
             for (int page = 1; page < maxPage; page++)
@@ -47,11 +47,11 @@ namespace UdemyGrabberWPF.Controllers
                         cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                         string link2 = link?.Attributes["href"]?.Value;
-                        string subLink2 = link2.Substring(link2.LastIndexOf("/"));
+                        string subLink2 = link2[link2.LastIndexOf("/")..];
                         string link3 = $"https://www.discudemy.com/go/{subLink2}";
                         doc = web.Load(link3);
                         string udemyLink = doc?.DocumentNode?.SelectSingleNode("//div[@class='ui segment']")?.ChildNodes["a"]?.Attributes["href"]?.Value;
-                        if (!string.IsNullOrEmpty(udemyLink) && udemyLink.ValidURL())
+                        if (!string.IsNullOrEmpty(udemyLink) && udemyLink.ValidURL(checkedCourses))
                         {
                             udemyLinkList.Add(udemyLink);
                         }
